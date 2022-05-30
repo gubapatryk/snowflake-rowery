@@ -48,7 +48,7 @@ for CURRENT_DATABASE in DATABASES:
                     cs.execute(f'COPY INTO {CURRENT_DATABASE}.{SCHEMA}.{f[:-4]} FROM @CSV_STAGE_1/{f[:-4]}.csv.gz FILE_FORMAT = (FORMAT_NAME = csv_format_3) ON_ERROR = \'skip_file\';')
             
             elif (CURRENT_DATABASE == "HR"):
-                if f == "FinancialTransactions.csv":
+                if f == "EmployeeHeadcount.csv" or f == "EmployeePerformance.csv" or f == "EmployeePersonalData.csv" or f == "EmployeePosition.csv":
                     cs.execute(f'COPY INTO {CURRENT_DATABASE}.{SCHEMA}.{f[:-4]} FROM @CSV_STAGE_1/{f[:-4]}.csv.gz FILE_FORMAT = (FORMAT_NAME = csv_format_1) ON_ERROR = \'skip_file\';')
                 else:
                     cs.execute(f'COPY INTO {CURRENT_DATABASE}.{SCHEMA}.{f[:-4]} FROM @CSV_STAGE_1/{f[:-4]}.csv.gz FILE_FORMAT = (FORMAT_NAME = csv_format_3) ON_ERROR = \'skip_file\';')
