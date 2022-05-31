@@ -16,8 +16,8 @@ ctx = snowflake.connector.connect(
     )
 
 for CURRENT_DATABASE in DATABASES:
-    cs = ctx.cursor()
     try:
+        cs = ctx.cursor()
         files = os.listdir(f'./data/{CURRENT_DATABASE}')
         cs.execute(f'USE DATABASE {CURRENT_DATABASE}')
         
@@ -52,11 +52,8 @@ for CURRENT_DATABASE in DATABASES:
                     cs.execute(f'COPY INTO {CURRENT_DATABASE}.{SCHEMA}.{f[:-4]} FROM @CSV_STAGE_1/{f[:-4]}.csv.gz FILE_FORMAT = (FORMAT_NAME = csv_format_1) ON_ERROR = \'skip_file\';')
                 else:
                     cs.execute(f'COPY INTO {CURRENT_DATABASE}.{SCHEMA}.{f[:-4]} FROM @CSV_STAGE_1/{f[:-4]}.csv.gz FILE_FORMAT = (FORMAT_NAME = csv_format_3) ON_ERROR = \'skip_file\';')
-
+        cs.execute(f'CREATE OR REPLACE SCHEMA {CURRENT_DATABASE}.latest CLONE {CURRENT_DATABASE}.{SCHEMA};')
     except Exception as e:
         print(e)
     finally:
-        cs.execute("REMOVE @csv_stage_1 pattern='.*.csv.gz';")
         cs.close()
-
-ctx.close()
